@@ -15,7 +15,7 @@
   --font-sans: var(--font-schibsted);
   --font-display: var(--font-schibsted);
   --font-math: var(--font-stix);
-  /* Easing for the series' one signature motion (spines, arrows). */
+  /* Easing for the shelf spines and button arrows. */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 

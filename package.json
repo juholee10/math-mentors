@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "covers": "node scripts/covers.mjs"
+    "covers": "node scripts/covers.mjs",
+    "banner": "node scripts/banner.mjs"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",

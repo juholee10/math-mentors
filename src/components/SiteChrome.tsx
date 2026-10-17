@@ -4,8 +4,8 @@ import type { ReactNode } from "react";
 import { usePathname } from "next/navigation";
 
 /**
- * Wraps every page in the header and footer, except the print-only cover
- * pages under /covers, which must render as a bare page for the PDF script.
+ * Wraps every page in the header and footer, except the bare pages that
+ * scripts capture: PDF covers under /covers and the share banner at /banner.
  */
 export default function SiteChrome({
   header,
@@ -17,7 +17,7 @@ export default function SiteChrome({
   children: ReactNode;
 }) {
   const pathname = usePathname();
-  if (pathname.startsWith("/covers/")) return <>{children}</>;
+  if (pathname.startsWith("/covers/") || pathname === "/banner") return <>{children}</>;
 
   return (
     <>
