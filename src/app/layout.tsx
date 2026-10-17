@@ -22,6 +22,7 @@ const math = STIX_Two_Text({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://math-mentors.org"),
   title: `${site.name} | ${site.tagline}`,
   description: site.description,
 };
