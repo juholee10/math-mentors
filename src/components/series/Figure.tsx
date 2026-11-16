@@ -1,14 +1,14 @@
-import type { CoverFigure } from "@/data/resources";
+import type { CoverFigure } from "@/data/papers";
 
 /**
- * The diagram printed on a volume's cover, drawn by hand for that one guide
+ * The diagram printed on a paper's cover, drawn by hand for that one paper
  * (there are no subject defaults). Each figure sits on a 100x100 field in
  * currentColor; strokes don't scale, so line weight holds from a spine-sized
  * thumbnail to the hero cover. Labels drop out on small covers, where they
  * would only be specks.
  *
- * To add one: add its key to CoverFigure in src/data/resources.ts, draw it
- * below, and set `figure` on the guide.
+ * To add one: add its key to CoverFigure in src/data/papers.ts, draw it
+ * below, and set `figure` on the paper.
  */
 export default function Figure({
   kind,

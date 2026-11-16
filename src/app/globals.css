@@ -2,25 +2,28 @@
 
 :root {
   --background: #fafafa;
-  --foreground: #171717;
+  --foreground: #1a1a1a;
 }
 
 @theme inline {
   --color-background: #fafafa;
-  --color-foreground: #171717;
+  --color-foreground: #1a1a1a;
   --color-paper: #fafafa;
-  --color-ink: #171717;
+  --color-ink: #1a1a1a;
+  --color-muted: #676767;
+  --color-faint: #9a9a9a;
+  --color-line: #e5e5e5;
+  --color-tile: #eeeeee;
   --color-surface: #ffffff;
   --color-border: #e5e5e5;
-  --font-sans: var(--font-schibsted);
-  --font-display: var(--font-schibsted);
+  --font-display: var(--font-archivo), ui-sans-serif, sans-serif;
+  --font-sans: -apple-system, ui-sans-serif, system-ui, Inter, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-math: var(--font-stix);
-  /* Easing for the shelf spines and button arrows. */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 html {
-  scrollbar-color: var(--color-neutral-400) transparent;
+  scrollbar-color: var(--color-faint) transparent;
   text-underline-offset: 0.2em;
   text-decoration-thickness: 1px;
 }
@@ -31,31 +34,31 @@ body {
   caret-color: var(--color-ink);
 }
 
-/* Browser surfaces, themed from the palette */
 ::selection {
   background: var(--color-ink);
   color: var(--color-paper);
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-ink);
+  outline: 1.5px solid var(--color-ink);
   outline-offset: 3px;
 }
 
-/* Cover/title setting: the series' heavy, tightly spaced grotesque */
-@utility title-set {
-  font-weight: 900;
-  letter-spacing: -0.04em;
-  line-height: 0.92;
+/* Small spaced capitals above a heading, e.g. "SECTIONS". */
+@utility eyebrow {
+  font-size: 11px;
+  line-height: 16px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-faint);
 }
 
-/* Hide scrollbar but keep native scroll behavior (shelf, review rail) */
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
+/* Light, tightly tracked headline face. */
+@utility headline {
+  font-family: var(--font-display);
+  font-weight: 300;
+  letter-spacing: -0.025em;
+  color: var(--color-ink);
 }
 
 .text-balance {

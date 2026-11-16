@@ -22,7 +22,7 @@ export default function SiteChrome({
   return (
     <>
       {header}
-      <main className="flex-1 pb-28">{children}</main>
+      <main className="flex-1">{children}</main>
       {footer}
     </>
   );

@@ -1,13 +1,15 @@
-// Puts each guide's series cover in front of its PDF.
+// Puts each accepted paper's cover in front of its PDF.
 //
 //   1. Keep the original PDFs (straight from LaTeX) in pdfs-source/.
+//      Name each one after the paper's pdfUrl in src/data/papers.ts.
 //   2. Start the site:  npm run dev
 //   3. In another terminal:  npm run covers
 //
 // For every pdfs-source/<name>.pdf, this renders the site's cover page
 // (/covers/<name>) at the exact size of that PDF's first page, and writes
 // cover + original to public/pdfs/<name>.pdf, which is what the site serves.
-// A PDF with no matching guide in src/data/resources.ts is copied unchanged.
+// A PDF with no matching paper in src/data/papers.ts is skipped: only
+// accepted papers are published.
 // Re-running is safe: it always starts from the originals in pdfs-source/.
 
 import { readdir, readFile, writeFile, mkdir } from "node:fs/promises";
@@ -46,7 +48,7 @@ async function main() {
 
   const files = (await readdir(SOURCE_DIR)).filter((f) => f.toLowerCase().endsWith(".pdf"));
   if (files.length === 0) {
-    console.log("No PDFs in pdfs-source/. Put the original guide PDFs there first.");
+    console.log("No PDFs in pdfs-source/. Put the accepted papers' PDFs there first.");
     return;
   }
 
@@ -65,8 +67,7 @@ async function main() {
       const response = await page.goto(`${SITE}/covers/${encodeURIComponent(name)}`, { waitUntil: "networkidle" });
 
       if (!response || response.status() === 404) {
-        await writeFile(path.join(OUT_DIR, file), await original.save());
-        console.log(`- ${file}: no guide uses this PDF, copied without a cover`);
+        console.log(`- ${file}: no accepted paper uses this PDF, skipped`);
         await page.close();
         continue;
       }

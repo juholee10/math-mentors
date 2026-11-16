@@ -1,10 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Button from "@/components/Button";
-import { ArrowRight } from "@/components/icons";
-import Volume from "@/components/series/Volume";
-import VolumeNumber from "@/components/series/VolumeNumber";
-import { getSeries, getVolumeNumber, getVolumesBy } from "@/data/resources";
+import { ArrowLink, PageIntro, Section, wrap } from "@/components/ui";
 import { site } from "@/data/site";
 
 export const metadata: Metadata = {
@@ -13,98 +9,63 @@ export const metadata: Metadata = {
 };
 
 export default function AboutPage() {
-  const first = getSeries()[0];
-
   return (
-    <div className="mx-auto max-w-6xl px-6 pt-12 sm:pt-16">
-      <div className="grid gap-12 lg:grid-cols-[1.5fr_1fr] lg:items-end">
-        <div>
-          <h1 className="title-set text-balance text-[clamp(3rem,7vw,6rem)] text-ink">How the series gets made.</h1>
-          <p className="mt-7 max-w-[56ch] text-lg leading-relaxed text-neutral-600">{site.description}</p>
-        </div>
-        {first && (
-          <div className="hidden w-64 justify-self-end lg:block">
-            <Volume resource={first} />
-            <p className="mt-3 text-sm text-neutral-500">Volume one</p>
-          </div>
-        )}
-      </div>
+    <div className={`${wrap} pt-24 sm:pt-28`}>
+      <PageIntro eyebrow="About" title="About Math Mentors">
+        <p>{site.description}</p>
+      </PageIntro>
 
-      <section className="mt-20">
-        <h2 className="title-set text-[clamp(2.5rem,5vw,4rem)] text-ink">Roles</h2>
-        <ul className="mt-10 grid gap-10 md:grid-cols-3 md:gap-8 lg:gap-12">
-          {site.roles.map((role) => (
-            <li key={role.title} className="border-t-2 border-ink pt-6">
-              <h3 className="title-set text-[clamp(2rem,3.2vw,2.75rem)] text-ink">{role.title}</h3>
-              <p className="mt-5 max-w-[40ch] text-[15px] leading-relaxed text-neutral-600">{role.description}</p>
+      <section className="mt-36">
+        <p className="eyebrow">Peer review</p>
+        <h2 className="headline mt-4 text-2xl leading-[1.25]">From submission to publication</h2>
+        <p className="mt-4 max-w-[36rem] text-base leading-[26px] font-light text-muted">
+          {site.reviewTotal}{" "}Only accepted papers are posted on this site.
+        </p>
+        {/* The order is the process, so each step keeps its number. */}
+        <ol className="mt-12 grid gap-x-10 gap-y-10 border-t border-line pt-8 sm:grid-cols-2 lg:grid-cols-5">
+          {site.review.map((step, i) => (
+            <li key={step.step}>
+              <p className="text-sm text-ink">
+                <span className="mr-2 tabular-nums text-faint">{i + 1}</span>
+                {step.step}
+              </p>
+              {step.time && <p className="mt-1 text-xs text-faint">{step.time}</p>}
+              <p className="mt-2 text-xs leading-5 text-muted">{step.description}</p>
             </li>
           ))}
-        </ul>
+        </ol>
       </section>
 
-      {/* Same three columns as the roles; the list ends on an open place, like the series does. */}
-      <section className="mt-24">
-        <h2 className="title-set text-[clamp(2.5rem,5vw,4rem)] text-ink">Authors</h2>
-        <ul className="mt-10 grid gap-10 md:grid-cols-3 md:gap-8 lg:gap-12">
-          {site.team.map((person) => {
-            const volumes = getVolumesBy(person.name);
-            return (
-              <li key={person.name} className="border-t border-border pt-6">
-                <p className="title-set text-[clamp(1.75rem,2.6vw,2.25rem)] text-ink">{person.name}</p>
-                <p className="mt-3 text-sm font-semibold text-ink">{person.roles.join(" · ")}</p>
-                {person.bio && (
-                  <p className="mt-4 max-w-[40ch] text-[15px] leading-relaxed text-neutral-600">{person.bio}</p>
-                )}
-                {volumes.length > 0 && (
-                  <ul className="mt-4">
-                    {volumes.map((volume) => (
-                      <li key={volume.slug}>
-                        <Link
-                          href={`/resources/${volume.slug}`}
-                          className="inline-flex min-h-8 items-baseline gap-2 text-[15px] text-neutral-600 hover:text-ink"
-                        >
-                          <span className="text-sm font-semibold text-ink">
-                            <VolumeNumber n={getVolumeNumber(volume)} />
-                          </span>
-                          <span className="underline decoration-neutral-400 underline-offset-2 hover:decoration-current">
-                            {volume.title}
-                          </span>
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </li>
-            );
-          })}
-          <li className="border-t-2 border-dashed border-neutral-300 pt-6">
-            <Link href="/join" className="group block text-neutral-500 transition-colors duration-300 hover:text-ink">
-              <span className="title-set block text-[clamp(1.75rem,2.6vw,2.25rem)]">Your name here.</span>
-              <span className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium">
-                Writer, reviewer, or outreach
-                <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 ease-out-expo group-hover:translate-x-0.5" />
-              </span>
+      <section className="mt-36">
+        <h2 className="headline text-2xl leading-[1.25]">Editorial board</h2>
+        <ul className="mt-12 grid gap-x-10 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
+          {site.board.map((seat) => (
+            <li key={seat.role}>
+              <p className="eyebrow">{seat.role}</p>
+              <p className={`mt-3 text-lg ${seat.name ? "text-ink" : "text-faint"}`}>
+                {seat.name || "To be announced"}
+              </p>
+            </li>
+          ))}
+          <li>
+            <p className="eyebrow">Open roles</p>
+            <Link href="/join" className="mt-3 inline-block text-lg text-ink hover:underline">
+              Join as an author, reviewer or editor
             </Link>
           </li>
         </ul>
       </section>
 
-      <section className="mt-24 grid gap-8 lg:grid-cols-[1fr_1.2fr] lg:gap-16">
-        <h2 className="title-set text-[clamp(2.5rem,5vw,4rem)] text-ink">
-          Founded in <span >{site.founded}</span>.
-        </h2>
-        <div>
-          <p className="max-w-[56ch] text-lg leading-relaxed text-neutral-600">
-            Math Mentors began as a small club in the founder&rsquo;s school, aiming to teach peers
-            LaTeX, but now it has grown into a huge, online library. Want to contribute? {site.noLatexNeeded}
-          </p>
-          <div className="mt-7">
-            <Button href="/join" size="lg">
-              Join the Team
-            </Button>
-          </div>
-        </div>
-      </section>
+      <Section title="History" className="mt-36">
+        <p>
+          Math Mentors started in {site.founded}. At first it taught LaTeX and made math materials for other
+          students. It is now a peer-reviewed journal where members write math papers and review each
+          other&rsquo;s work, and the papers that pass review are published in {site.journalName}.
+        </p>
+        <ArrowLink href="/join" className="mt-5">
+          Join Math Mentors
+        </ArrowLink>
+      </Section>
     </div>
   );
 }

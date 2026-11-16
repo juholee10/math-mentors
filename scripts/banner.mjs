@@ -6,7 +6,7 @@
 //
 // Screenshots /banner at 1200x630 (2x for sharp text) into
 // src/app/opengraph-image.png, which Next.js serves as the og:image for every
-// page. Re-run it after changing the banner, the logo, or the newest guide.
+// page. Re-run it after changing the banner, the logo, or the newest paper.
 
 import path from "node:path";
 import { chromium } from "playwright";

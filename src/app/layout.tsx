@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Schibsted_Grotesk, STIX_Two_Text } from "next/font/google";
+import { Archivo, STIX_Two_Text } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -8,8 +8,10 @@ import SourceInspector from "@/components/dev/SourceInspector";
 import { site } from "@/data/site";
 import { Analytics } from "@vercel/analytics/next";
 
-const grotesk = Schibsted_Grotesk({
-  variable: "--font-schibsted",
+// Headlines and navigation; body text uses the system sans stack.
+const archivo = Archivo({
+  variable: "--font-archivo",
+  weight: ["300", "400", "500"],
   subsets: ["latin"],
 });
 
@@ -35,7 +37,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${grotesk.variable} ${math.variable} h-full antialiased`}
+      className={`${archivo.variable} ${math.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-background text-foreground">
         <SiteChrome header={<Header />} footer={<Footer />}>

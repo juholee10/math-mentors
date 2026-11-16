@@ -1,53 +1,40 @@
 import Figure from "@/components/series/Figure";
-import VolumeNumber from "@/components/series/VolumeNumber";
-import { getFigure, getVolumeNumber, type Resource } from "@/data/resources";
-
-/** Odd volumes print on black board, even on white, so the shelf alternates. */
-export function coverTone(volume: number): "ink" | "paper" {
-  return volume % 2 === 1 ? "ink" : "paper";
-}
+import { formatAuthors, formatIssue, formatKind, getFigure, type Paper } from "@/data/papers";
+import { site } from "@/data/site";
 
 /**
- * A volume's front cover, drawn in the series' one design: imprint and number
- * across the top, the topic's diagram set off-center, the title heavy at the
- * foot. Everything is sized in container units, so one component serves the
- * 120px thumbnail and the 440px hero cover.
+ * A paper's cover page, added in front of its PDF by `npm run covers`.
+ * Sized in container units so it fills any page size.
  */
 export default function Cover({
-  resource,
+  paper,
   className = "",
   fill = false,
 }: {
-  resource: Resource;
+  paper: Paper;
   className?: string;
-  /** Fill the parent box instead of keeping the 5:7 shape (used for the PDF cover page). */
+  /** Fill the parent box instead of keeping a page shape. */
   fill?: boolean;
 }) {
-  const volume = getVolumeNumber(resource);
-  const ink = coverTone(volume) === "ink";
-  const figure = getFigure(resource);
+  const figure = getFigure(paper);
 
   return (
-    <div
-      className={`@container relative overflow-hidden ${fill ? "h-full w-full" : "aspect-[5/7]"} ${
-        ink ? "bg-ink text-paper" : "bg-white text-ink outline outline-1 -outline-offset-1 outline-ink/15"
-      } ${className}`}
-    >
-      <div className="absolute inset-0 flex flex-col p-[7cqw]">
-        <div className="flex items-baseline justify-between text-[max(10px,4.6cqw)] font-semibold leading-none">
-          <span>Math Mentors</span>
-          <VolumeNumber n={volume} />
+    <div className={`@container relative overflow-hidden bg-paper text-ink ${fill ? "h-full w-full" : "aspect-[5/7]"} ${className}`}>
+      <div className="absolute inset-0 flex flex-col p-[9cqw]">
+        <div className="flex items-baseline justify-between font-display text-[2.6cqw] text-muted">
+          <span>{site.journalName}</span>
+          <span className="tabular-nums">{formatIssue(paper.issue)}</span>
         </div>
-        <div className={`mt-[3cqw] h-[0.8cqw] min-h-px ${ink ? "bg-paper" : "bg-ink"}`} />
 
-        {figure && <Figure kind={figure} className="mt-[6cqw] ml-[16cqw] w-[70cqw] overflow-visible" />}
-
-        <div className="mt-auto">
-          <p className="title-set text-balance text-[12.5cqw]">{resource.title}</p>
-          <p className={`mt-[3.5cqw] text-[max(10px,4.2cqw)] leading-tight ${ink ? "text-neutral-400" : "text-neutral-500"}`}>
-            {resource.subject} &middot; {resource.type}
-          </p>
+        <div className="mt-[22cqw]">
+          <p className="text-[1.8cqw] tracking-[0.2em] text-faint uppercase">{formatKind(paper)}</p>
+          <p className="headline mt-[3cqw] text-balance text-[6.5cqw] leading-[1.12]">{paper.title}</p>
+          <p className="mt-[4cqw] text-[2.6cqw] text-ink">{formatAuthors(paper)}</p>
         </div>
+
+        {figure && <Figure kind={figure} className="mt-[8cqw] w-[44cqw] overflow-visible text-ink" />}
+
+        <p className="mt-auto text-[2cqw] text-faint">math-mentors.org</p>
       </div>
     </div>
   );

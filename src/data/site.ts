@@ -1,93 +1,136 @@
 // Site-wide copy and config. Edit this file to change text without touching components.
 
-import { resources } from "@/data/resources";
-
-// Said wherever we ask people to join (home back cover, About, Join).
-const noLatexNeeded = "No LaTeX experience required. We'll teach you.";
-
 export const site = {
   name: "Math Mentors",
   shortName: "MM",
-  noLatexNeeded,
-  tagline: "Free, comprehensive study guides for every kind of math learner",
+  // Working name, not final.
+  journalName: "The Math Mentors Journal",
+  tagline: "A peer-reviewed student math journal",
   hook:
-    "We're a student-run volunteer organization that writes LaTeX-typeset problem sheets, packets, equation sheets, and full guides, then gives them away for free, for any math course or level.",
+    "Math Mentors is a peer-reviewed math journal written by students. Authors learn LaTeX on their own, write their papers in the journal's template and review each other's work. Papers that pass peer review are published here in two issues each year.",
   description:
-    "Math Mentors is a volunteer organization where students write and typeset study materials in LaTeX so anyone can study math for free. Every guide is written by students, reviewed by students, and released for free to anyone who wants them, whatever math you're learning.",
+    "Math Mentors publishes The Math Mentors Journal, a peer-reviewed journal of math papers written by high school students. Each paper is checked by two student reviewers before it is accepted, and every paper uses the same LaTeX template. Any topic in mathematics is welcome.",
   founded: 2025,
 
   // Shown in the header, in the order they should appear.
   nav: [
     { label: "Home", href: "/" },
     { label: "About", href: "/about" },
-    { label: "Resources", href: "/resources" },
-    { label: "Testimonials", href: "/testimonials/new" },
+    { label: "Archive", href: "/papers" },
+    { label: "Submit", href: "/submit" },
     { label: "Join", href: "/join" },
   ],
 
-  // Join page / CTA form.
-  joinFormUrl: "https://forms.gle/Dtjab1f5zGi8mrN5A",
-  // All "contact us" links use this email.
+  // All "contact us" links, joining, and paper submissions use this email.
   contactEmail: "contact@math-mentors.org",
-  // Testimonial submissions POST here (a Formspree form endpoint). Sign up at
-  // formspree.io, create a form, and replace this with your form's URL
-  // (https://formspree.io/f/xxxxxxxx). Submissions land in your email + the
-  // Formspree dashboard for you to review before adding them to testimonials.ts.
-  testimonialFormEndpoint: "https://formspree.io/f/mdaqdgjp",
 
-  // The three jobs on every volume. Shown on About and on Join's credits page.
+  // The two ways into the journal. Shown on Home and Join.
+  tracks: [
+    {
+      who: "New to LaTeX",
+      title: "Learning LaTeX",
+      description:
+        "New members learn LaTeX on their own before they write a paper. No LaTeX experience is needed to join, and every paper uses the same template, so there is one fixed format to learn.",
+    },
+    {
+      who: "Already know LaTeX",
+      title: "Paper writing",
+      description:
+        "Members who already know LaTeX write papers for the journal. A paper can explain a known result with original examples and complete proofs, prove one short result or explore an open question. Members also review each other's papers.",
+    },
+  ],
+
+  // The jobs behind every paper. Shown on Join's credits page.
   roles: [
     {
-      title: "Writer",
+      title: "Author",
       credit: "Written by",
-      description:
-        `Pick a topic from a class or competition you've just been through, then draft and typeset the guide in LaTeX: explanations, worked examples, and practice problems. ${noLatexNeeded}`,
+      description: "Writes the paper in the journal's LaTeX template and revises it after review.",
     },
     {
       title: "Reviewer",
       credit: "Reviewed by",
-      description: "Work through every draft for accuracy and clarity before it's published to the library.",
+      description: "Checks every proof in the paper and writes a report. Each paper has two reviewers.",
     },
     {
-      title: "Outreach",
-      credit: "Shared by",
-      description: "Get finished guides to the students who need them: classmates, teachers, and clubs.",
+      title: "Editor",
+      credit: "Edited by",
+      description: "Checks the format and topic, assigns the reviewers and makes the final decision on each paper.",
+    },
+    {
+      title: "Typesetter",
+      credit: "Typeset by",
+      description: "Keeps each paper in the journal template and puts the issue together.",
     },
   ],
 
-  // The people on the About page. `roles` must match a title above; `bio` is
-  // one or two sentences and can be left empty until the person writes one.
-  // The volumes each person wrote are picked up from resources.ts by name.
-  team: [
-    { name: "Juho Lee", roles: ["Writer"], bio: "" },
+  // The editorial board, shown on About. Fill in `name` once each role is chosen.
+  board: [
+    { role: "Editor-in-Chief", name: "" },
+    { role: "Managing Editor", name: "" },
+    { role: "Section Editor, Articles and Notes", name: "" },
+    { role: "Section Editor, Research", name: "" },
+    { role: "Problems Editor", name: "" },
+    { role: "LaTeX and Production", name: "" },
+    { role: "Faculty Advisor", name: "" },
   ],
 
-  features: [
+  // From submission to publication. Shown on About and Submit.
+  review: [
+    { step: "Editor check", time: "About 1 week", description: "The editor checks the paper's format and topic." },
     {
-      title: "Created by students",
-      description:
-        "Every guide is created by students who recently went through the process of learning the materials themselves.",
-      icon: "PencilRuler",
+      step: "Peer review",
+      time: "About 2 weeks",
+      description: "Two member reviewers check every proof and each write a report.",
     },
     {
-      title: "Always free to access",
+      step: "Revision",
+      time: "",
+      description: "The author revises the paper and replies to each comment in a short letter.",
+    },
+    { step: "Decision", time: "", description: "The editor decides: accept, revise again, or reject." },
+    {
+      step: "Outside reading",
+      time: "",
       description:
-        "Every guide on this site is free to use for anyone.",
-      icon: "Gift",
+        "Research papers, and Notes where possible, also go to a faculty advisor or an outside reader, such as a math teacher or a university math student.",
+    },
+  ],
+  reviewTotal: "The whole process usually takes about 4 to 8 weeks.",
+
+  // The journal's sections. Shown on Submit.
+  sections: [
+    {
+      name: "Articles",
+      length: "4–8 pages",
+      description:
+        "Articles are expository papers that explain a known result clearly, with original examples and complete proofs. Surveys, which review the published work on a topic, are also printed as Articles with a \"Survey\" label.",
     },
     {
-      title: "Searchable resource library",
+      name: "Notes",
+      length: "2–4 pages",
       description:
-        "Filter by subject and resource type to find exactly the packet or guide you need.",
-      icon: "Search",
+        "Notes are short papers that present a single result, such as a new proof of a known theorem, a generalization of a competition problem or a small lemma.",
+    },
+    {
+      name: "Research",
+      length: "5–12 pages",
+      description:
+        "Research papers are exploratory papers that report computed data and conjectures, prove some of the cases and say which questions are still open.",
+    },
+    {
+      name: "Problems",
+      length: "1 page each",
+      description: "Problems are original problems written by members. Their solutions are published in the next issue.",
     },
   ],
 
-  stats: [
-    { value: String(resources.length), label: "Study Guides" },
-    { value: "50+", label: "Practice Problems" },
-    // Update this manually from your Vercel/analytics dashboard as traffic changes.
-    { value: "100+", label: "Visitors per Month" },
-    { value: String(2025), label: "Founded" },
+  standards: [
+    "Every proof must be complete and correct.",
+    "Every result that is used but not proved must have a citation.",
+    "Each paper must say clearly which parts are known and which parts are the author's own work.",
+    "A computer check is evidence, not a proof. Papers must label it as a check.",
+    "Surveys must cite original sources (papers and books), not only Wikipedia or blogs.",
+    "A claim of \"a new proof\" needs a literature search first. Write \"we could not find this proof in the literature\", not \"this is new\".",
   ],
 };

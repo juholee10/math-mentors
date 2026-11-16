@@ -1,19 +1,17 @@
 import Button from "@/components/Button";
-import TextLink from "@/components/TextLink";
+import { ArrowLink, PageIntro, wrap } from "@/components/ui";
 
 export default function NotFound() {
   return (
-    <div className="mx-auto max-w-6xl px-6 pt-16 sm:pt-24">
-      <h1 className="title-set text-balance text-[clamp(3rem,8vw,7rem)] text-ink">No such page.</h1>
-      <p className="mt-7 max-w-[52ch] text-lg leading-relaxed text-neutral-600">
-        The link may be broken, or the page may have moved. Every guide we&rsquo;ve published is
-        still in the library.
-      </p>
-      <div className="mt-9 flex flex-wrap items-center gap-6">
-        <Button href="/resources" size="lg">
-          Go to the library
+    <div className={`${wrap} pt-24 sm:pt-28`}>
+      <PageIntro eyebrow="404" title="Page not found">
+        <p>This page does not exist or has moved. Published papers are listed in the archive.</p>
+      </PageIntro>
+      <div className="mt-11 flex flex-wrap items-center gap-x-6 gap-y-4">
+        <Button href="/papers" className="min-w-56">
+          Archive
         </Button>
-        <TextLink href="/">Back to home</TextLink>
+        <ArrowLink href="/">Home</ArrowLink>
       </div>
     </div>
   );
