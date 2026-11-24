@@ -1,124 +1,131 @@
 import Link from "next/link";
-import Button from "@/components/Button";
-import PaperCard from "@/components/papers/PaperCard";
-import Shelf from "@/components/papers/Shelf";
-import { ArrowLink, Section, wrap } from "@/components/ui";
-import { SECTIONS, formatIssue, getNextIssue, getSeries, papers } from "@/data/papers";
-import { site } from "@/data/site";
+import { BlankCard, CatalogRows } from "@/components/catalog";
+import { Mail } from "@/components/icons";
+import { Action, Card, H2, TextLink, wrap } from "@/components/ui";
+import { site, submissionMailto } from "@/data/site";
+import { countContributors, getCourses, getPosts } from "@/lib/posts";
+
+const NEWEST = 6;
 
 export default function Home() {
-  const latest = getSeries().slice(-3).reverse();
-  const next = formatIssue(getNextIssue());
-  const counts = Object.fromEntries(SECTIONS.map((s) => [s, papers.filter((p) => p.section === s).length]));
+  const posts = getPosts();
+  const courses = getCourses();
+  const contributors = countContributors(posts);
 
   return (
     <div className={wrap}>
-      <section className="grid gap-16 pt-24 sm:pt-28 lg:grid-cols-[1fr_auto] lg:items-end">
+      <section className="grid gap-10 pt-14 sm:pt-20 lg:grid-cols-[minmax(0,25rem)_1fr] lg:gap-14">
         <div>
-        <p className="eyebrow">{site.name}</p>
-        <h1 className="headline mt-5 max-w-[40rem] text-balance text-4xl leading-[1.15]">{site.tagline}</h1>
-        <p className="mt-7 max-w-[36rem] text-base leading-[26px] font-light text-muted">{site.hook}</p>
-        <div className="mt-11 flex flex-wrap items-center gap-x-6 gap-y-4">
-          <Button href="/submit" className="min-w-56">
-            Submit a paper
-          </Button>
-          <Link href="/join" className="text-sm text-muted transition-colors hover:text-ink">
-            Join the journal <span className="ml-1.5 text-xs text-faint">No LaTeX experience needed</span>
-          </Link>
+          <h1 className="font-display text-[2.4rem] leading-[1.05] font-bold tracking-[-0.02em] sm:text-[3rem]">
+            {site.name}
+          </h1>
+          <p className="mt-5 text-[1.12rem] leading-[1.65]">
+            Math Mentors collects short math resources written by high school students: guides to specific courses,
+            worked problems and notes on single topics. An editor checks each post for mistakes before it goes up.
+          </p>
+          <p className="mt-4 text-[1.02rem] leading-[1.65] text-muted">
+            Most guides are written by students who finished the course recently, so they cover the parts a textbook
+            leaves out, such as which units took the most time and which free resources were worth using.
+          </p>
+
+          <dl className="typed mt-8 grid max-w-[22rem] grid-cols-3 border-y border-ink/70 text-center">
+            <Stat label={posts.length === 1 ? "post" : "posts"} value={posts.length} />
+            <Stat label={contributors === 1 ? "contributor" : "contributors"} value={contributors} />
+            <Stat label={courses.length === 1 ? "course" : "courses"} value={courses.length} />
+          </dl>
+
+          <div className="mt-8 flex flex-wrap items-center gap-3">
+            <Action href="/resources">Browse resources</Action>
+            <Action href="/contribute" variant="plain">
+              Contribute
+            </Action>
+          </div>
         </div>
-        <div className="mt-9">
-          <ArrowLink href={`mailto:${site.contactEmail}`}>Questions for the editors</ArrowLink>
-        </div>
-        </div>
-        <Shelf />
+
+        <Card
+          title="Newest posts"
+          meta={posts.length > NEWEST ? `${NEWEST} of ${posts.length}` : undefined}
+          className="self-start"
+        >
+          {posts.length > 0 ? (
+            <>
+              <CatalogRows posts={posts.slice(0, NEWEST)} />
+              <div className="border-t border-ruling px-5 py-3 font-display text-[0.92rem] sm:px-6">
+                <TextLink href="/resources">All resources, with filters and search</TextLink>
+              </div>
+            </>
+          ) : (
+            <BlankCard title="No posts published yet">
+              The first posts are with the editors. New posts will be listed here with their course, level and
+              contributor as soon as they are reviewed.
+            </BlankCard>
+          )}
+        </Card>
       </section>
 
-      <Section title={site.journalName} className="mt-36">
-        <p>{site.description}</p>
-        <div className="mt-5 flex flex-wrap gap-x-6">
-          <ArrowLink href="/about">About the journal</ArrowLink>
-          <ArrowLink href="/papers">Browse the archive</ArrowLink>
-        </div>
-      </Section>
-
-      <section className="mt-36">
-        <p className="eyebrow">Sections</p>
-        <h2 className="headline mt-4 text-2xl leading-[1.25]">Four kinds of papers</h2>
-        <p className="mt-4 max-w-[36rem] text-base leading-[26px] font-light text-muted">
-          Most early papers will be Articles. The journal does not require new results.
-        </p>
-        <ul className="mt-12 grid gap-x-10 gap-y-10 border-t border-line pt-8 sm:grid-cols-2 lg:grid-cols-4">
-          {site.sections.map((s) => (
-            <li key={s.name}>
-              <Link href={`/papers?section=${encodeURIComponent(s.name)}`} className="group block">
-                <p className="text-sm text-ink group-hover:underline">
-                  {s.name} <span className="text-faint">({counts[s.name] ?? 0})</span>
-                </p>
-                <p className="mt-1 text-xs leading-5 text-muted">
-                  {s.length}. {s.description}
-                </p>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section className="mt-36">
-        <h2 className="headline text-2xl leading-[1.25]">How the journal works</h2>
-        <div className="mt-14 grid gap-14 md:grid-cols-2 md:gap-10">
-          {site.tracks.map((track, i) => (
-            <div key={track.title}>
-              <p className="eyebrow">{track.who}</p>
-              <p className="mt-4 max-w-[38rem] text-lg leading-[25px] text-ink">{track.description}</p>
-              <ArrowLink href={i === 0 ? "/join" : "/submit"} className="mt-5">
-                {i === 0 ? "How to join" : "Submission guidelines"}
-              </ArrowLink>
+      <section className="mt-20 grid gap-8 border-t border-ink/70 pt-10 md:grid-cols-[minmax(0,25rem)_1fr] md:gap-14">
+        <H2>Post types</H2>
+        <dl className="grid gap-x-10 gap-y-6 sm:grid-cols-2">
+          {site.types.map((t) => (
+            <div key={t.key}>
+              <dt className="font-display font-semibold">
+                <Link href={`/resources?type=${t.key}`} className="hover:underline hover:decoration-rule">
+                  {t.name}
+                </Link>{" "}
+                <span className="typed text-[0.82rem] font-normal text-faint">{t.limit}</span>
+              </dt>
+              <dd className="mt-1 text-[0.98rem] leading-[1.6] text-muted">{t.description}</dd>
             </div>
           ))}
-        </div>
+        </dl>
       </section>
 
-      <section className="mt-36">
-        <h2 className="headline text-2xl leading-[1.25]">Standards</h2>
-        <ol className="mt-6 max-w-[40rem]">
-          {site.standards.map((rule, i) => (
-            <li key={rule} className="flex gap-4 border-b border-line py-3 text-base font-light text-ink first:border-t">
-              <span className="w-5 shrink-0 text-sm tabular-nums text-faint">{i + 1}</span>
-              {rule}
-            </li>
-          ))}
-        </ol>
-      </section>
-
-      <section className="mt-36">
-        <h2 className="headline text-3xl leading-[1.2]">Latest papers</h2>
-        {latest.length > 0 ? (
-          <ul className="mt-12 grid gap-8 md:grid-cols-3">
-            {latest.map((paper) => (
-              <li key={paper.slug}>
-                <PaperCard paper={paper} />
+      {courses.length > 0 && (
+        <section className="mt-16 grid gap-8 border-t border-ink/70 pt-10 md:grid-cols-[minmax(0,25rem)_1fr] md:gap-14">
+          <H2>Courses</H2>
+          <ul className="flex flex-wrap gap-2">
+            {courses.map((c) => (
+              <li key={c.slug}>
+                <Link
+                  href={`/courses/${c.slug}`}
+                  className="inline-flex min-h-10 items-center gap-2 rounded-[3px] border border-edge bg-card px-3 font-display text-[0.95rem] hover:border-ink"
+                >
+                  {c.name} <span className="typed text-[0.8rem] text-faint">{c.posts.length}</span>
+                </Link>
               </li>
             ))}
           </ul>
-        ) : (
-          <p className="mt-6 max-w-[36rem] text-base leading-[26px] font-light text-muted">
-            No papers have been published yet. The first issue, {next}, is in preparation.
-          </p>
-        )}
-        <ArrowLink href="/papers" className="mt-8 text-ink">
-          View all papers
-        </ArrowLink>
-      </section>
+        </section>
+      )}
 
-      <section className="mt-36">
-        <h2 className="headline text-2xl leading-[1.25]">Write for {next}</h2>
-        <p className="mt-4 max-w-[40rem] text-base leading-[26px] font-light text-muted">
-          New members learn LaTeX on their own first and then move on to writing and reviewing papers.
-        </p>
-        <ArrowLink href="/join" className="mt-5 text-ink">
-          How to join
-        </ArrowLink>
+      <section className="mt-16 grid gap-8 border-t border-ink/70 pt-10 md:grid-cols-[minmax(0,25rem)_1fr] md:gap-14">
+        <H2>Sending a post</H2>
+        <div className="max-w-[60ch]">
+          <p className="text-[1.02rem] leading-[1.65] text-muted">
+            Submissions are by email. Send the post as a PDF, .tex or .md file, or in the body of the email, with your
+            display name and grade. The Contribute page lists everything the email needs and the rules every post
+            follows.
+          </p>
+          <div className="mt-5 flex flex-wrap items-center gap-3">
+            <Action href={submissionMailto()}>
+              <Mail className="h-4 w-4" />
+              Email a submission
+            </Action>
+            <TextLink href="/contribute" className="font-display text-[0.95rem]">
+              Contribution rules
+            </TextLink>
+          </div>
+        </div>
       </section>
+    </div>
+  );
+}
+
+function Stat({ label, value }: { label: string; value: number }) {
+  return (
+    <div className="border-l border-ruling py-3 first:border-l-0">
+      <dd className="text-[1.5rem] leading-none font-bold text-ink">{value}</dd>
+      <dt className="mt-1.5 text-[0.75rem] text-faint">{label}</dt>
     </div>
   );
 }

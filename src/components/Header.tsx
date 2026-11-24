@@ -10,42 +10,37 @@ import { site } from "@/data/site";
 export default function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-
-  const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
-  // Join is the call to action, shown in a light gray box.
-  const links = site.nav.filter((item) => item.href !== "/join");
+  const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
 
   return (
-    <header className="sticky top-0 z-50 bg-paper/90 backdrop-blur-md">
-      <div className="flex h-15 items-center justify-between px-6">
-        <Link href="/" className="flex items-center gap-2.5 font-display text-[15px] font-medium text-ink">
-          <Image src="/mark.png" alt="" width={22} height={22} className="h-[22px] w-[22px]" preload />
+    <header className="sticky top-0 z-50 border-b border-ink/80 bg-ground/95 backdrop-blur-sm">
+      <div className="mx-auto flex h-14 w-full max-w-[72rem] items-center justify-between px-5 sm:px-8">
+        <Link href="/" className="flex items-center gap-2.5 font-display text-[1.02rem] font-bold tracking-[-0.01em]">
+          <Image src="/mark.png" alt="" width={22} height={22} className="h-[22px] w-[22px]" priority />
           {site.name}
         </Link>
 
-        <nav aria-label="Main" className="hidden items-center gap-1 md:flex">
-          {links.map((item) => {
-            const active = isActive(item.href);
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                aria-current={active ? "page" : undefined}
-                className={`px-3 py-1.5 font-display text-sm transition-colors ${
-                  active ? "text-ink" : "text-muted hover:text-ink"
-                }`}
-              >
-                {item.label}
-              </Link>
-            );
-          })}
-          <Link
-            href="/join"
-            aria-current={isActive("/join") ? "page" : undefined}
-            className="ml-2 bg-neutral-200/80 px-2.5 py-1.5 font-display text-sm text-muted transition-colors hover:text-ink"
-          >
-            Join
-          </Link>
+        <nav aria-label="Main" className="hidden md:block">
+          <ul className="flex items-stretch">
+            {site.nav.map((item) => {
+              const active = isActive(item.href);
+              return (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    aria-current={active ? "page" : undefined}
+                    className={`relative flex h-14 items-center px-3.5 font-display text-[0.95rem] transition-colors ${
+                      active
+                        ? "font-semibold text-ink after:absolute after:inset-x-3.5 after:bottom-[-1px] after:h-[3px] after:bg-rule"
+                        : "text-muted hover:text-ink"
+                    }`}
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
         </nav>
 
         <button
@@ -54,14 +49,14 @@ export default function Header() {
           aria-expanded={open}
           aria-controls="mobile-nav"
           onClick={() => setOpen((v) => !v)}
-          className="-mr-2.5 flex h-11 w-11 items-center justify-center text-ink md:hidden"
+          className="-mr-2.5 flex h-11 w-11 items-center justify-center md:hidden"
         >
           {open ? <Close className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
       </div>
 
       {open && (
-        <nav id="mobile-nav" aria-label="Main" className="border-t border-line px-6 py-2 md:hidden">
+        <nav id="mobile-nav" aria-label="Main" className="border-t border-edge px-5 py-2 md:hidden">
           {site.nav.map((item) => (
             <Link
               key={item.href}
@@ -69,7 +64,7 @@ export default function Header() {
               aria-current={isActive(item.href) ? "page" : undefined}
               onClick={() => setOpen(false)}
               className={`flex min-h-11 items-center font-display text-base ${
-                isActive(item.href) ? "text-ink" : "text-muted hover:text-ink"
+                isActive(item.href) ? "font-semibold text-ink" : "text-muted"
               }`}
             >
               {item.label}

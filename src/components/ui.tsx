@@ -1,76 +1,112 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { ArrowRight, ArrowUpRight } from "@/components/icons";
 
-/** The page column: full width up to 1440px with 60px gutters on desktop. */
-export const wrap = "mx-auto w-full max-w-[90rem] px-6 sm:px-15";
+/** The page column. */
+export const wrap = "mx-auto w-full max-w-[72rem] px-5 sm:px-8";
 
-/** Gray text link with a trailing arrow, e.g. "Learn more →". */
-export function ArrowLink({
+/** A page's title and opening paragraph. */
+export function PageHead({ title, children, aside }: { title: ReactNode; children?: ReactNode; aside?: ReactNode }) {
+  return (
+    <header className="flex flex-col gap-6 pt-14 pb-10 sm:pt-20 md:flex-row md:items-end md:justify-between">
+      <div className="max-w-[44rem]">
+        <h1 className="font-display text-[2.1rem] leading-[1.12] font-semibold tracking-[-0.015em] text-balance sm:text-[2.6rem]">
+          {title}
+        </h1>
+        {children && <div className="mt-4 text-[1.08rem] leading-[1.65] text-muted">{children}</div>}
+      </div>
+      {aside}
+    </header>
+  );
+}
+
+/** A section heading. */
+export function H2({ children, id, className = "" }: { children: ReactNode; id?: string; className?: string }) {
+  return (
+    <h2 id={id} className={`font-display text-[1.4rem] leading-tight font-semibold tracking-[-0.01em] ${className}`}>
+      {children}
+    </h2>
+  );
+}
+
+const linkClass =
+  "underline decoration-edge decoration-1 underline-offset-[0.2em] transition-colors hover:decoration-rule";
+
+/** An inline text link. Handles internal routes, mailto and external URLs. */
+export function TextLink({ href, children, className = "" }: { href: string; children: ReactNode; className?: string }) {
+  if (/^(https?:|mailto:)/.test(href) || /\.pdf$/.test(href)) {
+    const external = /^https?:/.test(href);
+    return (
+      <a href={href} className={`${linkClass} ${className}`} {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}>
+        {children}
+      </a>
+    );
+  }
+  return (
+    <Link href={href} className={`${linkClass} ${className}`}>
+      {children}
+    </Link>
+  );
+}
+
+/** A solid action, styled like a typed label on a drawer front. */
+export function Action({
   href,
   children,
+  variant = "solid",
+  download,
   className = "",
 }: {
   href: string;
   children: ReactNode;
+  variant?: "solid" | "plain";
+  download?: boolean;
   className?: string;
 }) {
-  const external = /^(https?:|mailto:)/.test(href);
-  const Arrow = /^https?:/.test(href) ? ArrowUpRight : ArrowRight;
-  const classes = `group inline-flex min-h-8 items-center gap-2 text-sm text-muted transition-colors hover:text-ink ${className}`;
-  const inner = (
-    <>
-      {children}
-      <Arrow className="h-3.5 w-3.5 transition-transform duration-300 ease-out-expo group-hover:translate-x-0.5" />
-    </>
-  );
-  if (external) {
+  const classes = `inline-flex min-h-11 items-center gap-2.5 rounded-[3px] px-4 font-display text-[0.95rem] font-semibold transition-colors ${
+    variant === "solid"
+      ? "bg-ink text-card hover:bg-[#2c3650]"
+      : "border border-ink/30 bg-card text-ink hover:border-ink"
+  } ${className}`;
+  if (/^(https?:|mailto:)/.test(href) || /\.pdf$/.test(href)) {
     return (
-      <a href={href} className={classes} {...(/^https?:/.test(href) ? { target: "_blank", rel: "noopener noreferrer" } : {})}>
-        {inner}
+      <a href={href} className={classes} download={download}>
+        {children}
       </a>
     );
   }
   return (
     <Link href={href} className={classes}>
-      {inner}
+      {children}
     </Link>
   );
 }
 
-/** A page's opening block: label, headline and intro paragraph. */
-export function PageIntro({
-  eyebrow,
+/** A catalog card with a heading row above its red rule. */
+export function Card({
   title,
-  children,
-}: {
-  eyebrow: string;
-  title: ReactNode;
-  children?: ReactNode;
-}) {
-  return (
-    <header className="max-w-[40rem]">
-      <p className="eyebrow">{eyebrow}</p>
-      <h1 className="headline mt-5 text-balance text-4xl leading-[1.15]">{title}</h1>
-      {children && <div className="mt-7 text-base leading-[26px] font-light text-muted">{children}</div>}
-    </header>
-  );
-}
-
-/** A section heading with its content directly underneath. */
-export function Section({
-  title,
+  meta,
   children,
   className = "",
+  as: Tag = "section",
+  headingLevel = 2,
 }: {
-  title: ReactNode;
+  title?: ReactNode;
+  meta?: ReactNode;
   children: ReactNode;
   className?: string;
+  as?: "section" | "div" | "article";
+  headingLevel?: 2 | 3;
 }) {
+  const Heading = headingLevel === 2 ? "h2" : "h3";
   return (
-    <section className={className}>
-      <h2 className="headline text-2xl leading-[1.25]">{title}</h2>
-      <div className="mt-5 max-w-[40rem] text-base leading-[26px] font-light text-muted">{children}</div>
-    </section>
+    <Tag className={`card ${className}`}>
+      {title && (
+        <div className="card-rule flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 px-5 pt-4 pb-2.5 sm:px-6">
+          <Heading className="font-display text-[1.05rem] font-semibold">{title}</Heading>
+          {meta && <p className="typed text-[0.82rem] text-faint">{meta}</p>}
+        </div>
+      )}
+      {children}
+    </Tag>
   );
 }

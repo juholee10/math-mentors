@@ -2,12 +2,14 @@ import path from "node:path";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Old URLs from when the site was a guide library.
+  // Old URLs from the journal version of the site.
   async redirects() {
     return [
-      { source: "/resources", destination: "/papers", permanent: true },
-      { source: "/resources/:slug", destination: "/papers", permanent: true },
-      { source: "/testimonials/new", destination: "/submit", permanent: true },
+      { source: "/papers", destination: "/resources", permanent: true },
+      { source: "/papers/:slug", destination: "/resources", permanent: true },
+      { source: "/submit", destination: "/contribute", permanent: true },
+      { source: "/join", destination: "/contribute", permanent: true },
+      { source: "/testimonials/new", destination: "/contribute", permanent: true },
     ];
   },
   turbopack: {

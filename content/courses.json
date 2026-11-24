@@ -1,0 +1,9 @@
+{
+  "AP Calculus BC": { "code": "AP-CALC-BC" },
+  "AP Calculus AB": { "code": "AP-CALC-AB" },
+  "AP Precalculus": { "code": "AP-PRECALC" },
+  "AP Statistics": { "code": "AP-STAT" },
+  "Linear Algebra": { "code": "LIN-ALG" },
+  "Competition Math": { "code": "COMP" },
+  "Complex Numbers": { "code": "COMPLEX" }
+}

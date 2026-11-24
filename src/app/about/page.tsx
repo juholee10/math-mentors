@@ -1,71 +1,92 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { ArrowLink, PageIntro, Section, wrap } from "@/components/ui";
+import { H2, PageHead, TextLink, wrap } from "@/components/ui";
 import { site } from "@/data/site";
 
 export const metadata: Metadata = {
-  title: "About | Math Mentors",
-  description: site.description,
+  title: "About",
+  description: "Who runs Math Mentors, how it started and what comes after the resource hub.",
 };
 
 export default function AboutPage() {
+  const team = site.team.filter((m) => m.name);
+
   return (
-    <div className={`${wrap} pt-24 sm:pt-28`}>
-      <PageIntro eyebrow="About" title="About Math Mentors">
-        <p>{site.description}</p>
-      </PageIntro>
-
-      <section className="mt-36">
-        <p className="eyebrow">Peer review</p>
-        <h2 className="headline mt-4 text-2xl leading-[1.25]">From submission to publication</h2>
-        <p className="mt-4 max-w-[36rem] text-base leading-[26px] font-light text-muted">
-          {site.reviewTotal}{" "}Only accepted papers are posted on this site.
-        </p>
-        {/* The order is the process, so each step keeps its number. */}
-        <ol className="mt-12 grid gap-x-10 gap-y-10 border-t border-line pt-8 sm:grid-cols-2 lg:grid-cols-5">
-          {site.review.map((step, i) => (
-            <li key={step.step}>
-              <p className="text-sm text-ink">
-                <span className="mr-2 tabular-nums text-faint">{i + 1}</span>
-                {step.step}
-              </p>
-              {step.time && <p className="mt-1 text-xs text-faint">{step.time}</p>}
-              <p className="mt-2 text-xs leading-5 text-muted">{step.description}</p>
-            </li>
-          ))}
-        </ol>
-      </section>
-
-      <section className="mt-36">
-        <h2 className="headline text-2xl leading-[1.25]">Editorial board</h2>
-        <ul className="mt-12 grid gap-x-10 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
-          {site.board.map((seat) => (
-            <li key={seat.role}>
-              <p className="eyebrow">{seat.role}</p>
-              <p className={`mt-3 text-lg ${seat.name ? "text-ink" : "text-faint"}`}>
-                {seat.name || "To be announced"}
-              </p>
-            </li>
-          ))}
-          <li>
-            <p className="eyebrow">Open roles</p>
-            <Link href="/join" className="mt-3 inline-block text-lg text-ink hover:underline">
-              Join as an author, reviewer or editor
-            </Link>
-          </li>
-        </ul>
-      </section>
-
-      <Section title="History" className="mt-36">
+    <div className={wrap}>
+      <PageHead title="About Math Mentors">
         <p>
-          Math Mentors started in {site.founded}. At first it taught LaTeX and made math materials for other
-          students. It is now a peer-reviewed journal where members write math papers and review each
-          other&rsquo;s work, and the papers that pass review are published in {site.journalName}.
+          Math Mentors is a student-run volunteer group. Members write short math resources for other students, and an
+          editor checks each one before it is published here.
         </p>
-        <ArrowLink href="/join" className="mt-5">
-          Join Math Mentors
-        </ArrowLink>
-      </Section>
+      </PageHead>
+
+      <div className="max-w-[44rem] space-y-14">
+        <section aria-labelledby="history">
+          <H2 id="history">How it started</H2>
+          <div className="mt-4 space-y-4 text-[1.02rem] leading-[1.7] text-muted">
+            <p>
+              Members first wrote longer materials in LaTeX, such as problem sheets, packets and textbook-style notes.
+              Full textbooks and research papers took too long to finish as a starting point, so the group now
+              publishes short posts that one student can write and one editor can check.
+            </p>
+            <p>
+              The posts are written by students who took the course or worked the problem themselves, which is the part
+              that large sites like Khan Academy and AoPS do not have.
+            </p>
+          </div>
+        </section>
+
+        <section aria-labelledby="plans">
+          <H2 id="plans">Plans</H2>
+          <p className="mt-4 text-[1.02rem] leading-[1.7] text-muted">
+            Each stage uses the work from the one before it.
+          </p>
+          <ol className="mt-5 border-y border-ruling">
+            {site.stages.map((s, i) => (
+              <li key={s.name} className="grid grid-cols-[2rem_1fr] gap-x-3 border-t border-ruling py-4 first:border-t-0 sm:grid-cols-[2rem_1fr_4rem]">
+                <span className="typed pt-0.5 text-[0.9rem] text-faint">{i + 1}.</span>
+                <div>
+                  <p className="font-display font-semibold">{s.name}</p>
+                  <p className="mt-1 text-[0.98rem] leading-[1.6] text-muted">{s.text}</p>
+                </div>
+                <span
+                  className={`typed col-start-2 mt-2 text-[0.82rem] sm:col-start-3 sm:mt-0.5 sm:text-right ${
+                    s.status === "Now" ? "font-bold text-rule" : "text-faint"
+                  }`}
+                >
+                  {s.status}
+                </span>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        <section aria-labelledby="team">
+          <H2 id="team">Team</H2>
+          {team.length > 0 ? (
+            <dl className="mt-5 divide-y divide-ruling border-y border-ruling">
+              {team.map((m) => (
+                <div key={`${m.role}-${m.name}`} className="grid gap-1 py-3 sm:grid-cols-[12rem_1fr]">
+                  <dt className="font-display text-muted">{m.role}</dt>
+                  <dd className="font-display font-semibold">{m.name}</dd>
+                </div>
+              ))}
+            </dl>
+          ) : (
+            <p className="mt-4 text-[1.02rem] leading-[1.7] text-muted">
+              The editors and the faculty advisor will be listed here.
+            </p>
+          )}
+        </section>
+
+        <section aria-labelledby="contact">
+          <H2 id="contact">Contact</H2>
+          <p className="mt-4 text-[1.02rem] leading-[1.7] text-muted">
+            Email <TextLink href={`mailto:${site.contactEmail}`}>{site.contactEmail}</TextLink> with questions,
+            corrections or submissions. Submission details are on the <TextLink href="/contribute">Contribute</TextLink>{" "}
+            page.
+          </p>
+        </section>
+      </div>
     </div>
   );
 }
